@@ -2,11 +2,18 @@ const Assignment = require("../models/assignment");
 const Submission = require("../models/submission");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
+// Ensure the `uploads` folder exists for Render (since .gitignore ignores empty local folders)
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // multer config for file uploads
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) =>
-    cb(null, path.join(__dirname, "../uploads")),
+    cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(null, unique + path.extname(file.originalname));
