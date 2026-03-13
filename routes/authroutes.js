@@ -3,7 +3,6 @@ const router = express.Router();
 
 const { registerUser, loginUser } = require('../controllers/authcontroller');
 
-// Local auth routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 

@@ -4,13 +4,13 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Ensure the `uploads` folder exists for Render (since .gitignore ignores empty local folders)
+
 const uploadDir = path.join(__dirname, "../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// multer config for file uploads
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) =>
     cb(null, uploadDir),
@@ -35,7 +35,7 @@ exports.uploadMiddleware = (req, res, next) => {
   });
 };
 
-// create assignment (defaults to Draft)
+
 exports.createAssignment = async (req, res) => {
   try {
     const { title, description, dueDate } = req.body;
@@ -56,14 +56,14 @@ exports.createAssignment = async (req, res) => {
   }
 };
 
-// get own assignments for teacher
+
 exports.getAssignments = async (req, res) => {
   try {
     const assignments = await Assignment.find({ createdBy: req.user.id }).sort({
       createdAt: -1,
     });
 
-    // attach submission count per assignment for analytics
+
     const ids = assignments.map((a) => a._id);
     const counts = await Submission.aggregate([
       { $match: { assignmentId: { $in: ids } } },
@@ -83,7 +83,7 @@ exports.getAssignments = async (req, res) => {
   }
 };
 
-// publish (Draft -> Published)
+
 exports.publishAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -99,7 +99,7 @@ exports.publishAssignment = async (req, res) => {
   }
 };
 
-// complete (Published -> Completed)
+
 exports.completeAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -115,7 +115,7 @@ exports.completeAssignment = async (req, res) => {
   }
 };
 
-// edit assignment (Draft or Published)
+
 exports.editAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -135,7 +135,7 @@ exports.editAssignment = async (req, res) => {
   }
 };
 
-// delete assignment (Draft only)
+
 exports.deleteAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id);
@@ -151,7 +151,7 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
-// get published assignments for student
+
 exports.getPublishedAssignments = async (_req, res) => {
   try {
     const assignments = await Assignment.find({ status: "Published" }).sort({
@@ -163,7 +163,7 @@ exports.getPublishedAssignments = async (_req, res) => {
   }
 };
 
-// submit answer to assignment
+
 exports.submitAssignment = async (req, res) => {
   try {
     const { assignmentId, answer } = req.body;
@@ -179,12 +179,12 @@ exports.submitAssignment = async (req, res) => {
       return res.status(400).json({ message: "This assignment is not accepting submissions" });
     }
 
-    // prevent late submissions
+
     if (new Date() > new Date(assignment.dueDate)) {
       return res.status(400).json({ message: "The due date has passed. Submissions are closed." });
     }
 
-    // one submission per student per assignment
+
     const existing = await Submission.findOne({
       assignmentId,
       studentId: req.user.id,
@@ -215,7 +215,7 @@ exports.submitAssignment = async (req, res) => {
   }
 };
 
-// get own submissions (student)
+
 exports.getMySubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ studentId: req.user.id });
@@ -225,7 +225,7 @@ exports.getMySubmissions = async (req, res) => {
   }
 };
 
-// get submissions for an assignment
+
 exports.getSubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({
@@ -237,7 +237,7 @@ exports.getSubmissions = async (req, res) => {
   }
 };
 
-// mark submission as reviewed
+
 exports.reviewSubmission = async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.subId);

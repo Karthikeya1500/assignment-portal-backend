@@ -2,12 +2,10 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Register new user
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // server-side validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -42,7 +40,6 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// Login user
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;

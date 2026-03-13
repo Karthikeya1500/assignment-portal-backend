@@ -17,12 +17,10 @@ const {
   uploadMiddleware,
 } = require("../controllers/assignmentcontroller");
 
-// student routes (static paths first)
 router.get("/published", authMiddleware, authorizeRole("student"), getPublishedAssignments);
 router.get("/my-submissions", authMiddleware, authorizeRole("student"), getMySubmissions);
 router.post("/submit", authMiddleware, authorizeRole("student"), uploadMiddleware, submitAssignment);
 
-// teacher routes
 router.post("/", authMiddleware, authorizeRole("teacher"), createAssignment);
 router.get("/", authMiddleware, authorizeRole("teacher"), getAssignments);
 router.put("/:id", authMiddleware, authorizeRole("teacher"), editAssignment);
